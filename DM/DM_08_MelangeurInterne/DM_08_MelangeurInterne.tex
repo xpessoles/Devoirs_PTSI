@@ -1,0 +1,656 @@
+\documentclass[10pt]{article}
+\input{style/coursHeadings}
+\input{style/programHeadings}
+\input{style/macros_SII}
+\input{style/macros_Titres}
+\input{style/macros_Frames}
+
+%Si le boolen xp est vrai : compilation pour xabi
+%Sinon compilation Damien
+\newboolean{xp}
+\setboolean{xp}{true}
+
+\newboolean{prof}
+\setboolean{prof}{false}
+
+\usepackage[%
+    pdftitle={DM 8},
+    pdfauthor={Xavier Pessoles},
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=magenta]{hyperref}
+
+
+\def\discipline{Sciences Industrielles de l'Ingénieur}
+\def\xxtitre{\ifthenelse{\boolean{xp}}{
+Devoir Maison 8
+}{
+Chapitre  -- }}
+
+\def\xxsoustitre{\ifthenelse{\boolean{xp}}{
+Mélangeur interne à rotors engrenants
+}{
+Partie  -- }}
+
+\def\xxauteur{\ifthenelse{\boolean{xp}}{
+Xavier \textsc{Pessoles} }{}}
+
+\def\xxpied{\ifthenelse{\boolean{xp}}{
+DM 8 -- \ifthenelse{\boolean{prof}}{Corrigé}{Sujet}}{
+\xxtitre}}
+
+\def\xxcathegorie{\ifthenelse{\boolean{xp}}{
+2013 -- 2014 \\
+Xavier \textsc{Pessoles}}{
+Informatique - Cours}}
+
+
+
+
+
+%---------------------------------------------------------------------------
+
+
+\begin{document}
+
+\ifthenelse{\boolean{xp}}{\input{style/enteteXP}}{\input{style/enteteDI}}
+
+\ifthenelse{\boolean{prof}}{\begin{center}
+\textit{Éléments de corrigé -- Adapté du concours E3A -- PSI -- 2013}
+\end{center}}{}
+
+%\setlength{\parskip}{0ex plus 0.2ex minus 0ex}
+% \renewcommand{\contentsname}{}
+% \renewcommand{\baselinestretch}{1}
+%
+%\tableofcontents
+
+ \renewcommand{\baselinestretch}{1.2}
+\setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
+
+
+
+\ifthenelse{\boolean{prof}}{}{
+\begin{minipage}[c]{.45\linewidth}
+\begin{center}
+\includegraphics[width=.5\textwidth]{images/intermix}
+\end{center}
+\end{minipage} \hfill
+\begin{minipage}[c]{.45\linewidth}
+\begin{center}
+\includegraphics[width=\textwidth]{images/schema}
+\end{center}
+\end{minipage} 
+}
+
+\section{Présentation du mélangeur à rotors engrenants}
+\ifthenelse{\boolean{prof}}{}{
+Un mélangeur interne à rotors engrenants est une machine utilisée dans l'industrie pour effectuer le mélange du caoutchouc et d'additifs divers. Il est, par exemple, utilisé dans la fabrication des pneumatiques.
+Nous nous intéresserons dans cette étude au modèle K5 de la société Farrel.
+
+Le mélangeur est principalement constitué de :
+\begin{itemize}
+\item une porte de chargement du caoutchouc et des différents additifs (a);
+\item un fouloir permettant de pousser les différents ingrédients vers la chambre de mélangeage (b);
+\item deux rotors à axes parallèles tournant en sens inverses (c) et (c');
+\item une chambre de mélangeage (d);
+\item une porte de déchargement (e).
+\end{itemize}
+
+Le modèle K5 permet de mélanger 100 kg de matière dans une chambre ayant une contenance de 143 litres. Le mélangeur a une masse totale de 16 tonnes. La masse du moteur électrique entraînant les rotors est de 2,5 tonnes.
+
+Les caractéristiques du mélange obtenu dépendent, en plus des caractéristiques des différents constituants, des conditions dans lesquelles s'effectue le mélange. Il est donc important de maîtriser, au cours des différentes phases du mélange, la vitesse de rotation des rotors et l'effort exercé par le fouloir tout en surveillant la température dans la chambre qui ne doit pas dépasser une valeur limite (pour que le mélange ne vulcanise pas dans le mélangeur).
+
+\begin{center}
+\includegraphics[width=.8\textwidth]{images/Exigences}
+\end{center}
+}
+
+\section{Étude de la chaîne fonctionnelle de mise en mouvement des rotors}
+\ifthenelse{\boolean{prof}}{}{
+\begin{obj}
+Vérifier le dimensionnement de l'actionneur. Choisir et régler un correcteur pour optimiser les performances de l'asservissement de vitesse participant à l'exigence 1.1.
+\end{obj}}
+
+
+\subsection{Construction du schéma bloc}
+\ifthenelse{\boolean{prof}}{}{
+\begin{obj}
+Mettre en place la structure globale de l'asservissement de vitesse.
+\end{obj}
+
+L'asservissement en vitesse des rotors est représenté par le schéma suivant :
+
+\begin{center}
+\includegraphics[width=.8\textwidth]{images/SchemaBloc}
+\end{center}
+
+$\omega_c$ : consigne de vitesse; $\omega_m$ : vitesse moteur ; $\omega_1$ : vitesse rotor 1 ; $\omega_2$ : vitesse rotor 2
+
+\begin{rem}
+Ces quatre vitesses sont des vitesses angulaires par rapport au bâti.
+\end{rem}
+
+On donne les équations suivantes caractérisant le moteur :
+$$
+C_m(t)+C_r(t) = J \dfrac{d\omega_m(t)}{dt}
+\quad
+u(t)=Ri(t)+L\dfrac{di(t)}{dt}+e(t)
+\quad
+C_m(t)=k_i i(t)
+\quad 
+e(t)=k_e\omega_m(t)
+$$
+\begin{itemize}
+\item $R$ : résistance de l'induit;
+\item $L$ : inductance de l'induit;
+\item $u(t)$ : tension d'alimentation du moteur;
+\item $i(t)$ : courant moteur;
+\item $e(t)$ : force contre électromotrice;
+\item $C_m(t)$ : couple disponible sur l'arbre moteur;
+\item $C_r(t)$ : couple résistant ramené sur l'arbre moteur;
+\item $\omega_m(t)$ : vitesse de rotation de l'arbre moteur;
+\item $J$ : moment d'inertie ramené sur l'arbre moteur;
+\item $k_e$ : constante de force contre électromotrice;
+\item $k_i$ : constante de couple.
+\end{itemize}
+
+On notera $C_m(p)$, $C_r(p)$, $\Omega_m(p)$, $U(p)$, $I(p)$ et $E(p)$ les transformées de Laplace des différentes grandeurs physiques définies ci-dessus.}
+
+% Question II.A.1
+\subparagraph{}
+\textit{En considérant que toutes les conditions initiales sont nulles, donner les quatre équations précédentes dans le domaine de Laplace.}
+\ifthenelse{\boolean{prof}}{
+\begin{corrige}
+$$
+C_m(p)+C_r(p) = J p\Omega_m(p)
+\quad
+U(p)=RI(p)+LpI(p)+E(p)
+\quad
+C_m(p)=k_i I(p)
+\quad 
+E(p)=k_e\Omega_m(p)
+$$
+
+\end{corrige}}{}
+
+% Question II.A.2
+\subparagraph{}
+\textit{Remplir les fonctions de transfert des cases $d$, $e$, $f$ et $g$ ainsi que les trois grandeurs physiques manquantes (zones grisées) sur le schéma-bloc fourni sur le cahier réponses.}
+\ifthenelse{\boolean{prof}}{
+\begin{corrige}
+\begin{center}
+\includegraphics[width=.8\textwidth]{images/cor_blocs}
+\end{center}
+\end{corrige}}{}
+\ifthenelse{\boolean{prof}}{}{
+\begin{center}
+\includegraphics[width=.8\textwidth]{images/qiia2}
+\end{center}
+
+
+Le schéma cinématique et les caractéristiques du réducteur sont fournis ci-dessous.
+
+\begin{center}
+\includegraphics[width=.6\textwidth]{images/reducteur}
+\end{center}
+}
+
+
+% Question II.A.3
+\subparagraph{}
+\textit{Donner la valeur algébrique des rapports de réduction $r_1=\dfrac{\omega_1}{\omega_m}$ et $r_2=\dfrac{\omega_2}{\omega_m}$ en fonction des nombres de dents $Z_i$. Faire les applications numériques.}
+\ifthenelse{\boolean{prof}}{
+\begin{corrige}
+$r_1=\dfrac{\omega_2}{\omega_m} = (-1)^n \dfrac{Z_m\cdot Z_{3b}\cdot Z_{1b}}{ Z_{3a}\cdot Z_{1a}\cdot Z_2} = -\dfrac{40\cdot 24 \cdot 80}{200 \cdot 144 \cdot 80} =-0,033 $ 
+
+$r_2=\dfrac{\omega_1}{\omega_m} = (-1)^n \dfrac{Z_m\cdot Z_{3b}}{ Z_{3a}\cdot Z_{1a}}
+= 0,033$ 
+\end{corrige}}{}
+
+% Question II.A.4
+\subparagraph{}
+\textit{Quelle doit être la fonction de transfert $K_a$ de l'adaptateur de consigne (case $a$) si l'on veut que l’écart $\varepsilon$ soit nul quand la vitesse $\omega_1$ est égale à la vitesse de consigne $\omega_c$ ? Remplir la case $a$ du schéma bloc précédent.}
+\ifthenelse{\boolean{prof}}{
+\begin{corrige}
+On a : $\varepsilon(p)= a \cdot \Omega_c(p) -k_g \Omega_m(p) = a \cdot \Omega_c(p) -k_g \dfrac{\Omega_1(p)}{r_1}=0$. Or dans les conditions indiquées ci-dessus, on souhaite que $\varepsilon(p)=0$ lorsque $\Omega_m(p) = \Omega_1(p)$; donc : 
+$a \cdot \Omega_c(p) -k_g \dfrac{\Omega_c(p)}{r_1}=0 \Longleftrightarrow a -k_g \dfrac{1}{r_1}=0 \Longleftrightarrow a = \dfrac{k_g}{r_1}$
+\end{corrige}}{}
+
+Dans un premier temps nous considèrerons que le correcteur est proportionnel de fonction de transfert $k_c$.
+
+
+% Question II.A.5
+\subparagraph{}
+\textit{
+\begin{itemize}
+\item Déterminer l'expression littérale de la fonction de transfert $H(p)=\dfrac{\Omega_1(p)}{\Omega_c(p)}$ de suivi de consigne ($C_r(p) = 0$) en fonction de $A$, $R$, $L$, $J$, $k_i$, $k_e$, $k_g$ et $k_c$.
+\item La mettre sous la forme $H(p)=\dfrac{K}{1+\dfrac{2\xi}{\omega_0}p+\dfrac{1}{\omega_0^2}p^2}$ et identifier les constantes $K$, $\xi$ et $\omega_0$.
+\end{itemize}}
+\ifthenelse{\boolean{prof}}{
+\begin{corrige}
+D'une part, on a :
+$$
+\dfrac{\Omega_m(p)}{U(p)} = \dfrac{\dfrac{1}{R+Lp}\cdot k_i\cdot\dfrac{1}{Jp}}{1+\dfrac{1}{R+Lp}\cdot k_i\cdot\dfrac{1}{Jp} k_e}
+=\dfrac{k_i}{(R+Lp)Jp+ k_ik_e}
+$$
+
+D'autre part :
+
+$$H(p)=\dfrac{\Omega_1(p)}{\Omega_c(p)}
+=\dfrac{k_g}{r_1} \cdot \dfrac{k_c A \dfrac{k_i}{(R+Lp)Jp+ k_ik_e} }{1+k_c A k_g \dfrac{k_i}{(R+Lp)Jp+ k_ik_e}}\cdot r_1
+= \dfrac{k_g k_c A k_i}{RJp+LJp^2+ k_ik_e+k_c A k_g k_i}
+$$
+$$H(p)=\dfrac{\dfrac{k_g k_c A }{k_e+k_c Ak_g }}{\dfrac{RJ}{k_ik_e+k_c Ak_g k_i}p+\dfrac{LJ}{k_ik_e+k_c Ak_g k_i}p^2+ 1}
+$$
+Par identification :
+$$
+\left\{
+\begin{array}{l}
+K = \dfrac{k_g k_c A }{k_e+k_c Ak_g } \\
+\dfrac{1}{\omega_0^2} = \dfrac{LJ}{k_ik_e+k_c Ak_g k_i} \\
+\dfrac{2\xi}{\omega_0} = \dfrac{RJ}{k_ik_e+k_c Ak_g k_i}
+\end{array}
+\right.
+\Longleftrightarrow
+\left\{
+\begin{array}{l}
+K = \dfrac{k_g k_c A }{k_e+k_c Ak_g } \\
+\omega_0 = \sqrt{\dfrac{k_ik_e+k_c Ak_g k_i}{LJ}} \\
+\xi= \dfrac{1}{2}\dfrac{R\sqrt{J}}{\sqrt{L}\sqrt{k_ik_e+k_c Ak_g k_i}}
+\end{array}
+\right.
+$$
+\end{corrige}}{}
+
+
+\subsection{Étude de l'asservissement de vitesse}
+
+\ifthenelse{\boolean{prof}}{}{
+\begin{obj}
+Choisir et régler un correcteur pour répondre au cahier des charges.
+\end{obj}
+
+Pour cette partie, on utilisera le schéma-bloc à retour unitaire suivant :
+
+\begin{center}
+\includegraphics[width=.8\textwidth]{images/SchemaBloc2}
+\end{center}
+
+
+Avec  $H_1(p)=\dfrac{3000}{1+1,6\cdot10^{-2}p}$, $H_2(p)=\dfrac{5,7\cdot 10^{-5}\left(1+1,6\cdot10^{-2}p \right)}{1+2,9\cdot 10^{-2}p+ 4,6\cdot 10^{-4} p^2}$  et $A = 5$ (sans unité). Les valeurs numériques sont dans les unités du système international.
+ 
+\begin{center}
+\includegraphics[width=.6\textwidth]{images/Criteres}
+\end{center}
+%Le cahier des charges impose les conditions suivantes :
+%Critères	Niveaux
+%Stabilité	MG = 10 dB minimum
+%M = 40° minimum
+%Précision :
+%- En suivi de consigne, pour une entrée en échelon de vitesse
+%
+%- En régulation :
+%      - Pour une perturbation en échelon de couple
+%      - Pour une perturbation en rampe de couple
+%	
+%- Ecart nul en régime établi
+%
+%
+%
+%- Ecart nul en régime établi
+%
+%- Ecart maximum de 0,5 tr/min en régime établi pour une rampe de pente -50 N.m/s
+%Rapidité
+%- Temps de réponse à 5 %	
+%- 0,5 s maximum
+%Amortissement
+%- Dépassement	
+%- Pas de dépassement de la consigne
+
+\begin{rem}
+\begin{itemize}
+\item La perturbation en échelon de couple modélise une variation brusque du couple résistant au niveau des rotors due à la mise en action du fouloir.
+\item La perturbation en rampe de couple modélise une variation lente du couple résistant liée à la variation de température du mélange.
+\end{itemize}
+\end{rem}
+
+Le diagramme de Bode de la fonction de transfert en boucle ouverte du système non corrigé ($C(p) = 1$) est donné ci-dessous.
+ 
+\begin{center}
+\includegraphics[width=.8\textwidth]{images/Bode}
+\end{center}
+}
+%% Question II.D.1
+%\subparagraph{}
+%\textit{Le système modélisé ainsi est-il stable ? Justifier votre réponse.}
+
+% Question II.D.2
+\subparagraph{}
+\textit{Si l'on considère dans un premier temps que le correcteur est proportionnel de fonction de transfert $C(p) = K$, donner la valeur que prend l'écart (en fonction de $a$, $b$, $c$ et $K$ s’il est constant) dans chacun des trois cas proposés. 
+%(on ne demande pas de développer de calculs sur la copie). 
+Le cahier des charges est-il respecté ?}
+\ifthenelse{\boolean{prof}}{
+\begin{corrige}
+%D'une part, considérons que $C_r(p)=0$ :
+%$$
+%\dfrac{\Omega_r(p)}{\Omega_c(p)} 
+%= \dfrac{AC(p)H_1(p)H_2(p)}{1+AC(p)H_1(p)H_2(p)}
+%$$
+%D'une part, considérons que $\Omega_c(p)=0$ :
+%$$
+%\dfrac{\Omega_r(p)}{C_r} 
+%= \dfrac{H_2(p)}{1+AC(p)H_1(p)H_2(p)}
+%$$
+Calculons la fonction écart : 
+$$
+\varepsilon(p)
+= \Omega_c(p)-\Omega_r(p) 
+= \Omega_c(p) - \left( C_r(p)+\varepsilon(p)AC(p)H_1(p)\right)H_2(p) 
+= \Omega_c(p)- C_r(p)H_2(p)-\varepsilon(p)AC(p)H_1(p)H_2(p) 
+$$
+On a alors :
+$$
+\varepsilon(p) = \dfrac{\Omega_c(p)-C_r(p)H_2(p)}{1+AC(p)H_1(p)H_2(p)}
+$$
+
+Dans le premier cas, $\Omega_c(p)=\dfrac{a}{p}$ et $C_r(p)=0$; donc :
+$$
+\varepsilon_s = \underset{p\to0} {\lim}p \cdot \dfrac{a}{p} \dfrac{1}{1+AKH_1(p)H_2(p)} = \dfrac{a}{1+3000\cdot 5 \cdot K\cdot 5,7\cdot 10^{-5}}
+= \dfrac{a}{1+0,855\cdot K}
+$$
+
+Dans le second cas, $\Omega_c(p)=0$ et $C_r(p)=\dfrac{b}{p}$; donc :
+$$
+\varepsilon_s = \underset{p\to0} {\lim}p \cdot \dfrac{-b}{p} \dfrac{H_2(p)}{1+AC(p)H_1(p)H_2(p)} 
+=-b\dfrac{5,7\cdot 10^{-5}}{1+0,855\cdot K}
+$$
+
+Dans le troisième cas, $\Omega_c(p)=0$ et $C_r(p)=\dfrac{c}{p^2}$; donc :
+$$
+\varepsilon_s =\underset{p\to0} {\lim}p \cdot \dfrac{-c}{p^2} \dfrac{H_2(p)}{1+AC(p)H_1(p)H_2(p)} = -\infty
+$$
+\end{corrige}}{}
+
+\ifthenelse{\boolean{prof}}{}{
+\begin{center}
+\includegraphics[width=.4\textwidth]{images/qiid2}
+\end{center}}
+\subparagraph{}
+\textit{Dans quel(s) cas le cahier des charges est il-respecté sur le critères de précision ?}
+\ifthenelse{\boolean{prof}}{
+\begin{corrige}
+Le cahier des charges n'est pas respecté. 
+\end{corrige}}{}
+
+
+% Question II.D.3
+\subparagraph{}
+\textit{Parmi les quatre correcteurs proposés,
+ %cocher celui (ou ceux) qui peut (peuvent) 
+quels sont ceux qui permettent de répondre aux trois critères de précision du cahier des charges.}
+\ifthenelse{\boolean{prof}}{
+\begin{corrige}
+Afin d'avoir un écart statique nul dans pour les 3 critères, il est nécessaire qu'il y ait un intégrateur en amont de la perturbation. Il faudra donc avoir recours aux correcteurs 2 ou 4. 
+\end{corrige}}{}
+\ifthenelse{\boolean{prof}}{}{
+\begin{center}
+\includegraphics[width=.6\textwidth]{images/qiid3}
+\end{center}}
+
+Pour la suite nous utiliserons un correcteur de fonction de transfert  $C(p)=K\dfrac{1+Tp}{Tp}$
+
+\begin{rem}
+Ce correcteur est appelé proportionnel intégral.
+\end{rem}
+
+% Question II.D.4
+\subparagraph{}
+\textit{Tracer le diagramme de Bode (asymptotique et allure du diagramme réel) du correcteur seul. Indiquer les pentes et points caractéristiques en fonction de $K$ et $T$.}
+\ifthenelse{\boolean{prof}}{
+\begin{corrige}
+\begin{center}
+\includegraphics[width=.6\textwidth]{images/corrige_bode_correcteur}
+\end{center}
+\end{corrige}}{}
+
+On choisit la valeur de $T$ de telle façon que la valeur de la pulsation conduisant à un déphasage de $-45\textdegree$ pour le correcteur seul soit dix fois plus petite que la pulsation pour laquelle la FTBO non corrigée présente un déphasage de $-90\textdegree$.
+
+% Question II.D.5
+\subparagraph{}
+\textit{
+\begin{itemize}
+\item Déterminer la valeur de $T$ correspondante.
+\item Tracer le diagramme asymptotique de Bode de la FTBO corrigée avec $K = 1$ et votre valeur de $T$. Indiquer les pentes et points caractéristiques.
+\end{itemize}}
+\ifthenelse{\boolean{prof}}{
+\begin{corrige}
+D'après le tracé de la FTBO, la phase est de -90\textdegree lorsque $\omega=45\; rad/s$. On doit donc choisir $T$ tel que $1/T=4,5\; rad/s$. On a donc $T=0,22\; s$.  
+
+\end{corrige}}{}
+\ifthenelse{\boolean{prof}}{}{
+\begin{center}
+\includegraphics[width=.8\textwidth]{images/qiid5}
+\end{center}
+
+%On donne, sur le cahier réponses, le diagramme de Black de la FTBO corrigée avec $T$ déterminé à la question précédente et $K = 1$.
+
+% Question II.D.6
+%\subparagraph{}
+%\textit{Déterminer la plus grande valeur de $K$ (notée $K_{stab}$) permettant de satisfaire au critère de stabilité. Vous porterez sur la courbe les tracés que vous jugerez utiles.}
+
+\begin{rem}
+On montre qu'au maximum, $K_{stab}=4,5$.
+\end{rem}
+
+On donne ci-dessous les courbes de la réponse du système à une entrée en échelon unitaire ($\omega_c(t) = u(t)$) pour $K$ prenant les valeurs  $\{1; 2 ; 3 ; 3,5 ; 4\}$.
+}
+% Question II.D.7 :
+\subparagraph{}
+\textit{
+\begin{itemize}
+\item La valeur de $K_{stab}$ est-elle compatible avec les critères de précision en suivi de consigne, d'amortissement et de rapidité ? Justifiez votre réponse.
+\item Choisir pour $K$ une valeur permettant de respecter à la fois les critères de stabilité, amortissement, rapidité et précision en suivi de consigne. Vous justifierez vos réponses et porterez sur la courbe les tracés que vous jugerez utiles.
+\end{itemize}}
+\ifthenelse{\boolean{prof}}{
+\begin{corrige}
+\begin{minipage}[c]{.47\linewidth}
+Le cahier des charges indique que pour une sollicitation à un échelon l'écart statique doit être nul en régime permanent, que le temps de réponse à 5\% doit être inférieur à 0,5 s et que la consigne ne doit pas être dépassée. 
+
+D'après le réseau de courbe proposé, il semble que $K$ doivent être inférieur à 3 pour ne pas dépasser la consigne. Par ailleurs, le cas $K=3$ a un temps de réponse à 5\% et semble présenter un écart statique nul. 
+\end{minipage}\hfill
+\begin{minipage}[c]{.47\linewidth}
+\begin{center}
+\includegraphics[width=.95\textwidth]{images/corrige_K}
+\end{center}
+\end{minipage}
+
+\end{corrige}}{}
+\ifthenelse{\boolean{prof}}{}{
+\begin{center}
+\includegraphics[width=.8\textwidth]{images/qiid7}
+\end{center}
+
+
+Le correcteur ayant été dimensionné, le schéma-bloc peut se mettre sous la forme suivante :
+Avec $F(p)=\dfrac{2,25\cdot 10^5 \left(1+0,2p\right)}{p\left(1+1,6\cdot 10^{-2}p\right)}$ et $H_2(p)=\dfrac{5,7\cdot 10^{-5}\left(1+1,6\cdot 10^{-2}p\right) }{1+2,9\cdot 10^{-2}p+4,6\cdot 10^{-4}p^2}$. Les valeurs numériques sont dans les unités du système international.
+
+Nous nous intéressons maintenant à la précision en régulation du système modélisé ainsi. L'étude sera donc faite pour une consigne nulle $\omega_c(t) = 0$.
+}
+
+% Question II.D.8
+\subparagraph{}
+\textit{Déterminer l'expression de $\varepsilon(p)$ en fonction de $C_r(p)$, $F(p)$ et $H_2(p)$.}
+\ifthenelse{\boolean{prof}}{
+\begin{corrige}
+On a vu que $
+\varepsilon(p) = \dfrac{\Omega_c(p)-C_r(p)H_2(p)}{1+AC(p)H_1(p)H_2(p)}$. Si $\Omega_c(p) = 0$ :
+$$
+\varepsilon(p) = \dfrac{-C_r(p)H_2(p)}{1+AC(p)H_1(p)H_2(p)}
+$$
+
+\end{corrige}}{}
+
+% Question II.D.9
+\subparagraph{}
+\textit{Que vaut $\varepsilon_1 = \underset{t\to +\infty}{\lim} \varepsilon(t)$ pour une perturbation en échelon $C_r(t) = b u(t)$ ? Justifier votre réponse et conclure quant au respect du cahier des charges.}
+\ifthenelse{\boolean{prof}}{
+\begin{corrige}
+$$
+\varepsilon_1 
+= \underset{t\to +\infty}{\lim} \varepsilon(t)
+= \underset{p\to 0}{\lim} p\dfrac{-C_r(p)H_2(p)}{1+AC(p)H_1(p)H_2(p)}
+= \underset{p\to 0}{\lim} \dfrac{-bH_2(p)}{1+AC(p)H_1(p)H_2(p)}
+= 0
+$$
+\end{corrige}}{}
+
+% Question II.D.10
+\subparagraph{}
+\textit{Déterminer $\varepsilon_2 = \underset{t\to +\infty}{\lim} \varepsilon(t)$ pour une perturbation en rampe $C_r(t) = c t u(t)$. Le cahier des charges est-il respecté (justifier par l'application numérique sur $\varepsilon_2$) ?}
+\ifthenelse{\boolean{prof}}{
+\begin{corrige}
+$$
+\varepsilon_2
+= \underset{p\to 0}{\lim} \dfrac{-(c/p)H_2(p)}{1+AC(p)H_1(p)H_2(p)} = -\dfrac{c}{2,25\cdot 10^5}
+$$
+Pour $c=50$, $\varepsilon_2 =  2,2 \cdot 10^{-4} rad/s=0,0021 tr/min$. Le cahier des charges est respecté. 
+\end{corrige}}{}
+
+
+\section{Étude de la chaîne fonctionnelle d'actionnement du fouloir}
+\ifthenelse{\boolean{prof}}{}{
+\begin{obj}
+Analyser la commande logique de la chaîne d’énergie pneumatique d’ouverture et de fermeture de la chambre de mélangeage participant aux exigences 1.1, 1.2 et 1.4. Vérifier les performances dynamiques de cette chaîne d’énergie. Analyser la structure mécanique de la solution hydraulique alternative.
+\end{obj}
+}
+\subsection{Étude de la commande}
+\ifthenelse{\boolean{prof}}{}{
+\begin{obj}
+Déterminer les équations de commande du vérin actionnant le fouloir.
+\end{obj}
+
+Le fouloir actionné par un vérin double-effet monte et descend sous les actions de pression pneumatique et de pesanteur. Pour certains cycles de production de mélange de caoutchouc il est possible de commander le fouloir en utilisant une pression pneumatique haute (6,5 bars) ou basse (3,7 bars). On donne en annexe A le schéma pneumatique de l’installation permettant la mise en mouvement du fouloir.
+}
+
+%Question III.A.1
+\subparagraph{}
+\textit{A partir des informations figurant sur le schéma pneumatique, exprimer les équations logiques définissant respectivement, la commande de la descente en haute pression $D_h$, la commande de la descente en basse pression $D_b$ et la commande de montée en haute pression $M_h$. Ces expressions seront données en fonction des variables logiques $V1$, $V2$, $V3$ et $V4$ de commande électrique des distributeurs.}
+\ifthenelse{\boolean{prof}}{
+\begin{corrige}
+On a :
+$$D_h=V_1 \cdot \overline{V_2}\cdot V_3 \cdot  \overline{V_4}
+\quad
+D_b=V_1 \cdot \overline{V_2}\cdot \overline{V_3} \cdot  \overline{V_4}
+\quad
+M_h=\overline{V_1} \cdot V_2 \cdot V_3 \cdot  \overline{V_4}$$
+
+
+
+\end{corrige}}{}
+
+%Question III.A.2
+\subparagraph{}
+\textit{Proposer une commande A permettant d’immobiliser le fouloir dans une position quelconque (à la compressibilité de l’air près). Cette commande pourra être exprimée en fonction des variables logiques  $V1$, $V2$, $V3$ et $V4$.}
+\ifthenelse{\boolean{prof}}{
+\begin{corrige}
+$$A=\overline{V_1} \cdot \overline{V_2} \cdot \overline{V_3} \cdot  V_4$$
+\end{corrige}}{}
+
+
+\subsection{Étude du mouvement du fouloir}
+\ifthenelse{\boolean{prof}}{}{
+\begin{obj}
+Vérifier que la dynamique du fouloir répond au cahier des charges (Voir annexe A pour le paramétrage et les caractéristiques dimensionnelles).
+\end{obj}
+
+\begin{rem}
+Le cahier des charges impose les conditions suivantes :
+\begin{itemize}
+\item temps d'ouverture de la chambre : 1 seconde maximum;
+\item variation de hauteur du fouloir en cours de mélangeage : 30 cm maximum.
+\end{itemize}
+
+\end{rem}
+
+%
+%On veut, dans un premier temps, évaluer la durée de la phase de montée du fouloir.
+%Partant de la position basse on utilise la commande $Mh$ de montée. La pression d’air est donc $Pi = 6,5\;bars$ dans la chambre inférieure alors que la pression de fuite dans la chambre supérieure est $Ps = 0,5 \;bars$.
+
+On considère :
+\begin{itemize}
+\item un coefficient de frottement visqueux de l’ensemble piston-tige-fouloir/guidage : $f = 5000 N/(m/s)$;
+\item une course utile du vérin de la position basse à la position haute :  $l_0= 1\;m$;
+\item $k = 85000 \; N/m$.
+\end{itemize}
+}
+\subsection{Étude du mouvement du fouloir}
+\ifthenelse{\boolean{prof}}{}{
+On note $F(p)$ la transformée de Laplace de $F(t) - F_0$.
+
+\begin{rem}
+En appliquant  le théorème de la résultante dynamique en projection sur $\vect{z_0}$ à l'ensemble \{fouloir+piston+tige\}, on montre que :
+$$
+a\ddot{z}+b\dot{z}+cz = F(t)-F(0)
+$$
+
+avec $a=M$, $b=f$, $c=k$.
+\end{rem}}
+% Question III.B.8
+\subparagraph{}
+\textit{En considérant que toutes les conditions initiales sont nulles, déterminer l'expression littérale de la fonction de transfert $Z(p)/F(p)$. Faire l’application numérique.}
+\ifthenelse{\boolean{prof}}{
+\begin{corrige}
+On a :
+$$
+\dfrac{Z(p)}{F(p)} = \dfrac{1}{Mp^2+fp+k}=\dfrac{\dfrac{1}{k}}{\dfrac{M}{k}p^2+\dfrac{f}{k}p+1}
+$$
+
+Avec : 
+$$
+\left\{
+\begin{array}{l}
+K= \dfrac{1}{k} = 1,17\cdot 10^{-5} m/N \\
+\omega_0 = \sqrt{\dfrac{k}{M}} = 4,9 rad/s\\
+\xi = \dfrac{f\omega_0}{2k}= 0,14
+\end{array}
+\right.
+$$
+\end{corrige}}{}
+
+% Question III.B.9
+\subparagraph{}
+\textit{\begin{itemize}
+\item En utilisant l’abaque fourni en annexe B, tracer l’allure de la courbe $z(t)$ de position du fouloir soumis à l’excitation en échelon d’effort de $10\,000\; N$.
+\item Mettre en place sur celle-ci les valeurs numériques caractéristiques.
+\item Conclure quant au respect du cahier des charges.
+\end{itemize}}
+\ifthenelse{\boolean{prof}}{
+\begin{corrige}
+Pour un échelon de 10 000 N, la valeur finale tend vers 0,11 m, le premier dépassement est de près de 70\% soit approximativement 0,2 m.
+\begin{center}
+\includegraphics[width=.8\textwidth]{images/corrige_mvt}
+\end{center}
+\end{corrige}}{}
+
+%
+%Ce mouvement d’oscillation permet d’éviter une surpression au sein du mélange et ainsi un échauffement excessif. Toutefois, il ne permet pas un contrôle précis de la pression et de la position du fouloir nécessaires pour certains types de mélanges. Ces mélanges imposent une variation de hauteur du fouloir en position basse de l’ordre du centimètre. La solution à ce nouveau cahier des charges est le passage à une technologie hydraulique.
+%
+%Le fouloir est alors actionné par deux vérins hydrauliques (formés des pièces 6, 6’, 7 et 7’) comme illustré sur l’annexe F. Les efforts à développer étant très importants, la structure mécanique doit être suffisamment rigide.
+%
+\ifthenelse{\boolean{prof}}{}{
+\section*{Annexe A}
+\begin{center}
+\includegraphics[width=.8\textwidth]{images/annexeB_1}
+
+\includegraphics[width=.8\textwidth]{images/annexeB_2}
+\end{center}
+
+\section*{Annexe B}
+\begin{center}
+\includegraphics[width=.8\textwidth]{images/annexeE}
+\end{center}
+}
+\end{document}
+
+
