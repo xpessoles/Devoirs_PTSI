@@ -1,0 +1,101 @@
+\documentclass[10pt]{article}
+\input{style/coursHeadings}
+\input{style/programHeadings}
+\input{style/macros_SII}
+\input{style/macros_Titres}
+\input{style/macros_Frames}
+
+%Si le boolen xp est vrai : compilation pour xabi
+%Sinon compilation Damien
+\newboolean{xp}
+\setboolean{xp}{true}
+
+\newboolean{prof}
+\setboolean{prof}{false}
+
+\usepackage[%
+    pdftitle={CI 06 : Stat - Modélisation des AM},
+    pdfauthor={Xavier Pessoles},
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=magenta]{hyperref}
+
+
+\def\discipline{Sciences Industrielles de l'Ingénieur}
+\def\xxtitre{\ifthenelse{\boolean{xp}}{
+CI 06 : Étude du comportement statique des systèmes}{}}
+
+\def\xxsoustitre{\ifthenelse{\boolean{xp}}{
+Chapitre 1 -- Modélisation des Actions Mécaniques}{
+Partie  -- }}
+
+\def\xxauteur{\ifthenelse{\boolean{xp}}{
+Stéphane Genouël
+%Xavier \textsc{Pessoles}
+}{}}
+
+\def\xxpied{\ifthenelse{\boolean{xp}}{
+CI 06 : Statique\\
+Ch. 1 : Modélisation des AM -- TD 2 -- Lois de Coulomb}{
+\xxtitre}}
+
+\def\xxcathegorie{\ifthenelse{\boolean{xp}}{
+2013 -- 2014 \\
+Xavier \textsc{Pessoles}}{}}
+
+
+
+
+
+%---------------------------------------------------------------------------
+
+
+\begin{document}
+
+\ifthenelse{\boolean{xp}}{\input{style/enteteXP}}{\input{style/enteteDI}}
+
+\begin{center}
+\Large{\textsc{Interrogation B}}
+\end{center}
+
+\subsection*{Cours}
+\subparagraph*{}
+\textit{Énoncer les lois de Coulomb.}
+
+
+
+\subsection*{Exercice 2 : Embrayage à friction monodisque de véhicules automobiles (surfaces de friction plane)}
+\setcounter{subparagraph}{0} 
+
+\begin{minipage}[c]{.55\linewidth}
+On modélise l'embrayage par 2 disques creux identiques (1 et 2) en contact grâce à une 
+action axiale $\vect{Fa}$. 
+ 
+Le rayon intérieur des 2 disques vaut : $R_{min}$. 
+Le rayon extérieur des 2 disques vaut : $R_{max}$. 
+On donne $f$ le facteur d’adhérence entre les deux pièces. 
+
+
+
+\end{minipage}\hfill
+\begin{minipage}[c]{.4\linewidth}
+\begin{center}
+\includegraphics[width=.9\textwidth]{images/fig_07}
+\end{center}
+\end{minipage}
+
+\subparagraph{}
+\textit{Refaire en grand les 2 schémas ci-dessus : un dans le plan $(\vect{y}, \vect{z})$ et l’autre dans le plan $(\vect{x}, \vect{y})$, en plaçant les actions élémentaires normale et tangentielle de 2 sur 1 en un point $Q$ quelconque de la surface de contact.}
+
+\subparagraph{}
+\textit{Exprimer $\vect{dF_{2\rightarrow 1}(Q)}$.}
+
+\subparagraph{}
+\textit{Déterminer le couple maximal transmissible en fonction de $p$ et des caractéristiques 
+géométriques de l’embrayage.}
+
+\end{document}
+
+\subparagraph{}
+\textit{}
+

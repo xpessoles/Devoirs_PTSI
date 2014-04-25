@@ -1,0 +1,146 @@
+\documentclass[10pt]{article}
+\input{style/coursHeadings}
+\input{style/programHeadings}
+\input{style/macros_SII}
+\input{style/macros_Titres}
+\input{style/macros_Frames}
+
+%Si le boolen xp est vrai : compilation pour xabi
+%Sinon compilation Damien
+\newboolean{xp}
+\setboolean{xp}{true}
+
+\newboolean{prof}
+\setboolean{prof}{false}
+
+\usepackage[%
+    pdftitle={CI 06 : Stat - Modélisation des AM},
+    pdfauthor={Xavier Pessoles},
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=magenta]{hyperref}
+
+
+\def\discipline{Sciences Industrielles de l'Ingénieur}
+\def\xxtitre{\ifthenelse{\boolean{xp}}{
+CI 06 : Étude du comportement statique des systèmes}{}}
+
+\def\xxsoustitre{\ifthenelse{\boolean{xp}}{
+Chapitre 1 -- Modélisation des Actions Mécaniques}{
+Partie  -- }}
+
+\def\xxauteur{\ifthenelse{\boolean{xp}}{
+Stéphane Genouël
+%Xavier \textsc{Pessoles}
+}{}}
+
+\def\xxpied{\ifthenelse{\boolean{xp}}{
+CI 06 : Statique\\
+Ch. 1 : Modélisation des AM -- TD 2 -- Lois de Coulomb}{
+\xxtitre}}
+
+\def\xxcathegorie{\ifthenelse{\boolean{xp}}{
+2013 -- 2014 \\
+Xavier \textsc{Pessoles}}{}}
+
+
+
+
+
+%---------------------------------------------------------------------------
+
+
+\begin{document}
+
+\ifthenelse{\boolean{xp}}{\input{style/enteteXP}}{\input{style/enteteDI}}
+
+\begin{center}
+\Large{\textsc{Interrogation A}}
+\end{center}
+
+\subsection*{Cours}
+\subparagraph*{}
+\textit{Énoncer les lois de Coulomb.}
+
+
+
+\subsection*{Exercice 1 : Assemblage par frettage}
+\ifthenelse{\boolean{prof}}{}{}
+\begin{minipage}[c]{.5\linewidth}
+Le frettage consiste à encastrer deux pièces en utilisant le phénomène d’adhérence. 
+ 
+Avant l’assemblage réalisé à l’aide d’une presse, l’arbre 1 
+possède un diamètre légèrement supérieur à celui de l’alésage 
+(trou cylindrique) de la pièce 2 dans laquelle il vient se loger. 
+ 
+Après frettage, il subsiste donc une pression de contact $p$ 
+(souvent supposée uniforme sur toute la surface de contact) 
+entre les deux pièces. 
+
+ 
+Les caractéristiques de cet assemblage par frettage sont les suivantes : 
+\begin{itemize}
+\item $R$ : rayon de l’arbre 1;
+\item $L$ : longueur du contact; 
+\item $f$ : facteur d’adhérence entre les deux pièces.
+\end{itemize}
+
+
+\end{minipage}\hfill
+\begin{minipage}[c]{.48\linewidth}
+\begin{center}
+\includegraphics[width=\textwidth]{images/fig_01}
+\end{center}
+\end{minipage}
+
+
+\subsection*{Couple maximal transmissible}
+
+\begin{minipage}[c]{.55\linewidth}
+Le couple (ou moment) maximal transmissible correspond à la valeur maximale 
+de la composante sur l’axe $\vect{z}$ du moment résultant de l’action mécanique qui peut 
+être transmise d’une pièce à l’autre sans qu’elles se désolidarisent. 
+ 
+Pour simplifier notre étude, on considère la pièce 2 fixe et on cherche à 
+déterminer la composante sur l’axe $\vect{z}$ du moment résultant de l’action mécanique 
+à appliquer à la pièce 1 pour atteindre le glissement de 1/2 autour de $\vect{z}$.
+ 
+\end{minipage}\hfill
+\begin{minipage}[c]{.4\linewidth}
+\begin{center}
+\includegraphics[width=.9\textwidth]{images/fig_04}
+\end{center}
+\end{minipage}
+
+\begin{minipage}[c]{.55\linewidth}
+\subparagraph{}
+\textit{Refaire en grand les 2 schémas ci-contre : un 
+dans le plan $(\vect{y}, \vect{z})$ et l’autre dans le plan $(\vect{x}, \vect{y})$, 
+en plaçant les actions élémentaires normale et 
+tangentielle de 2 sur 1 en un point $Q$ 
+quelconque de la surface de contact. }
+
+
+\end{minipage}\hfill
+\begin{minipage}[c]{.4\linewidth}
+\begin{center}
+\includegraphics[width=.9\textwidth]{images/fig_05}
+\end{center}
+\end{minipage}
+
+
+\subparagraph{}
+\textit{Exprimer $\vect{dF_{2\rightarrow 1}(Q)}$.}
+
+\subparagraph{}
+\textit{Déterminer le couple maximal transmissible en fonction de $p$ et des 
+caractéristiques géométriques du frettage.}
+
+
+
+
+\end{document}
+
+\subparagraph{}
+\textit{}
+
